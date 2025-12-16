@@ -30,6 +30,12 @@ function RootLayoutContent() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="detail"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </View>
       <StatusBar style="auto" />
