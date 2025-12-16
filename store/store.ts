@@ -1,13 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
-import movieReducer from './slices/movieSlice';
+import authReducer from './slices/Auth/authSlice';
+import cartoonReducer from './slices/CartoonPage/cartoonSlice';
+import cinemaReducer from './slices/CinemaPage/cinemaSlice';
+import homeReducer from './slices/HomePage/homeSlice';
+import seriesReducer from './slices/SeriresSlice/seriesSlice';
 import themeReducer from './slices/themeSlice';
+import tvshowsReducer from './slices/TVShowsPage/tvshowsSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    movie: movieReducer,
     theme: themeReducer,
+    home: homeReducer,
+    cartoon: cartoonReducer,
+    cinema: cinemaReducer,
+    series: seriesReducer,
+    tvshows: tvshowsReducer,
   },
 });
 
