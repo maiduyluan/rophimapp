@@ -1,41 +1,34 @@
-import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
 
-interface CastMember {
-  id: string;
-  avatar: string;
+interface MovieItem {
+  title: string;
+  subtitle: string;
+  year: string;
+  backgroundImage: string;
 }
 
 interface MovieBannerProps {
-  title: string;
-  subtitle: string;
-  imdbRating: string;
-  quality: string;
-  genre: string;
-  year: string;
-  duration: string;
-  backgroundImage: string;
-  castMembers?: CastMember[];
-  onPress?: () => void;
+  movies: MovieItem[];
+  onPress?: (movieIndex: number) => void;
 }
 
 export const MovieBanner: React.FC<MovieBannerProps> = ({
-  title,
-  subtitle,
-  imdbRating,
-  quality,
-  genre,
-  year,
-  duration,
-  backgroundImage,
-  castMembers = [],
+  movies,
   onPress,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { width } = Dimensions.get('window');
+
+  if (movies.length === 0) {
+    return null;
+  }
+
   const styles = StyleSheet.create({
     container: {
       width: '100%',
       height: 400,
-      marginBottom: 20,
       overflow: 'hidden',
     },
     backgroundImage: {
@@ -53,6 +46,8 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
     },
     content: {
       zIndex: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     title: {
       fontSize: 24,
@@ -87,103 +82,66 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
       fontSize: 11,
       fontWeight: '600',
     },
-    castContainer: {
+    paginationContainer: {
       flexDirection: 'row',
-      alignItems: 'center',
-      gap: 4,
-    },
-    castAvatar: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      borderWidth: 2,
-      borderColor: '#1a1a1a',
-      backgroundColor: '#666',
-    },
-    castAvatarImage: {
-      width: '100%',
-      height: '100%',
-      borderRadius: 18,
-    },
-    buttonContainer: {
-      marginTop: 16,
-      borderRadius: 8,
-      overflow: 'hidden',
-    },
-    buttonWatch: {
-      marginTop: 16,
-      borderRadius: 8,
-      overflow: 'hidden',
-      height: 48,
-    },
-    buttonGradientBg: {
-      flex: 1,
-      paddingVertical: 12,
-      paddingHorizontal: 32,
-      borderRadius: 8,
-      alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#91d2d1ff',
+      alignItems: 'center',
+      gap: 8,
+      paddingVertical: 12,
+      backgroundColor: 'transparent',
     },
-    buttonGradientBgLight: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderRadius: 8,
-      backgroundColor: '#FFA500',
-      opacity: 0.3,
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    activeDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#fff',
     },
   });
 
-  return (
-    <Pressable onPress={onPress}>
-      <View style={styles.container}>
-        <Image
-          source={{ uri: backgroundImage }}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        />
-        <View style={styles.overlay}>
-          <View style={styles.content}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
+  const renderItem = ({ item, index }: { item: MovieItem; index: number }) => (
+    <View style={styles.container}>
+      <Image
+        source={{ uri: item.backgroundImage }}
+        style={styles.backgroundImage}
+        resizeMode="stretch"
+      />
+      <View style={styles.overlay}>
+        <View style={styles.content}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.subtitle}>{item.subtitle}</Text>
 
-            <View style={styles.metaContainer}>
-              <View style={styles.metaTag}>
-                <Text style={styles.metaText}>IMDb {imdbRating}</Text>
-              </View>
-              <View style={styles.metaTag}>
-                <Text style={styles.metaText}>{quality}</Text>
-              </View>
-              <View style={styles.metaTag}>
-                <Text style={styles.metaText}>{genre}</Text>
-              </View>
-              <View style={styles.metaTag}>
-                <Text style={styles.metaText}>{year}</Text>
-              </View>
-              <View style={styles.metaTag}>
-                <Text style={styles.metaText}>{duration}</Text>
-              </View>
+          <View style={styles.metaContainer}>
+            <View style={styles.metaTag}>
+              <Text style={styles.metaText}>{item.year}</Text>
             </View>
-
-            {castMembers.length > 0 && (
-              <View style={styles.castContainer}>
-                {castMembers.slice(0, 6).map((member, index) => (
-                  <View key={member.id} style={styles.castAvatar}>
-                    <Image
-                      source={{ uri: member.avatar }}
-                      style={styles.castAvatarImage}
-                      resizeMode="cover"
-                    />
-                  </View>
-                ))}
-              </View>
-            )}
           </View>
         </View>
       </View>
-    </Pressable>
+    </View>
+  );
+
+  return (
+    <View style={{ marginBottom: 20 }}>
+      <Carousel
+        width={width}
+        height={400}
+        data={movies}
+        renderItem={renderItem}
+        onSnapToItem={(index) => {
+          setActiveIndex(index);
+          onPress?.(index);
+        }}
+        autoPlay
+        autoPlayInterval={3000}
+        scrollAnimationDuration={600}
+        loop
+      />
+    </View>
   );
 };
