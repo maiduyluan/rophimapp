@@ -1,3 +1,5 @@
+import MaskedView from '@react-native-masked-view/masked-view';
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import {
   Dimensions,
@@ -24,6 +26,7 @@ interface MovieSliderProps {
   title: string;
   onMoviePress?: (movie: Movie) => void;
   onViewMore?: () => void;
+  gradientColors?: string[];
 }
 
 export const MovieSlider: React.FC<MovieSliderProps> = ({
@@ -31,23 +34,20 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
   title,
   onMoviePress,
   onViewMore,
+  gradientColors = ['#7B68EE', '#4A90E2', '#FF6B6B'],
 }) => {
   const { width } = Dimensions.get('window');
-  const movieCardWidth = (width - 48) / 2;
+  const movieCardWidth = (width - 40) / 3;
 
   const styles = StyleSheet.create({
-    container: {
-      marginBottom: 24,
-    },
     headerContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
       marginBottom: 12,
     },
     title: {
-      fontSize: 18,
+      fontSize: 28,
       fontWeight: '700',
       color: '#fff',
     },
@@ -61,7 +61,8 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
       color: '#4A90E2',
     },
     scrollContainer: {
-      paddingHorizontal: 16,
+      overflow: 'hidden',
+      borderRadius: 8,
     },
     moviesGrid: {
       flexDirection: 'row',
@@ -126,9 +127,29 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
   const displayedMovies = movies.slice(0, 6);
 
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>{title}</Text>
+        <View style={{ flex: 1 }}>
+          <MaskedView
+            maskElement={
+              <Text
+                style={[
+                  styles.title,
+                  { paddingHorizontal: 2, paddingVertical: 2 },
+                ]}
+              >
+                {title}
+              </Text>
+            }
+          >
+            <LinearGradient
+              colors={gradientColors as any}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{ height: 40, width: '100%' }}
+            />
+          </MaskedView>
+        </View>
         {displayedMovies.length > 0 && (
           <Pressable
             style={styles.viewMoreButton}

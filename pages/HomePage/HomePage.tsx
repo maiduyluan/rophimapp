@@ -55,11 +55,11 @@ export const HomePage: React.FC = () => {
       backgroundColor: colors.background,
     },
     scrollContent: {
+      gap: 24,
       paddingBottom: 16,
     },
-    section: {
+    categorySection: {
       paddingHorizontal: 16,
-      marginBottom: 8,
     },
     titleSection: {
       fontSize: 28,
@@ -68,8 +68,14 @@ export const HomePage: React.FC = () => {
     },
     categoriesContainer: {
       flexDirection: 'row',
-      marginTop: 12,
       gap: 8,
+    },
+    movieSliderSection: {
+      gap: 24,
+      backgroundColor: '#21232fff',
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      borderRadius: 10,
     },
   });
 
@@ -105,7 +111,7 @@ export const HomePage: React.FC = () => {
             />
           </View>
 
-          <View style={styles.section}>
+          <View style={styles.categorySection}>
             <Text style={styles.titleSection}>Bạn đang quan tâm gì?</Text>
             <CategoryCard
               genresData={genresData || []}
@@ -113,27 +119,45 @@ export const HomePage: React.FC = () => {
             />
           </View>
 
-          <MovieSlider
-            title="Phim Hàn Quốc mới"
-            movies={moviesData?.items.slice(0, 6) || []}
-            onMoviePress={(movie) => {
-              // Handle movie press
-            }}
-            onViewMore={() => {
-              // Navigate to all Korean movies
-            }}
-          />
+          <View style={{ paddingHorizontal: 16 }}>
+            <View style={styles.movieSliderSection}>
+              <MovieSlider
+                title="Phim Hàn Quốc mới"
+                movies={moviesData?.items.slice(0, 6) || []}
+                gradientColors={['#7B68EE', '#4A90E2', '#FF6B6B']}
+                onMoviePress={(movie) => {
+                  // Handle movie press
+                }}
+                onViewMore={() => {
+                  // Navigate to all Korean movies
+                }}
+              />
 
-          <MovieSlider
-            title="Phim Trung Quốc mới"
-            movies={moviesData?.items.slice(6, 12) || []}
-            onMoviePress={(movie) => {
-              // Handle movie press
-            }}
-            onViewMore={() => {
-              // Navigate to all Chinese movies
-            }}
-          />
+              <MovieSlider
+                title="Phim Trung Quốc mới"
+                movies={moviesData?.items.slice(0, 6) || []}
+                gradientColors={['#FF6B6B', '#FFA500', '#FFD700']}
+                onMoviePress={(movie) => {
+                  // Handle movie press
+                }}
+                onViewMore={() => {
+                  // Navigate to all Chinese movies
+                }}
+              />
+
+              <MovieSlider
+                title="Phim US-UK mới"
+                movies={moviesData?.items.slice(0, 6) || []}
+                gradientColors={['#4A90E2', '#00CED1', '#32CD32']}
+                onMoviePress={(movie) => {
+                  // Handle movie press
+                }}
+                onViewMore={() => {
+                  // Navigate to all Chinese movies
+                }}
+              />
+            </View>
+          </View>
         </ScrollView>
       </View>
 

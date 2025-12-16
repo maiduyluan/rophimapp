@@ -127,7 +127,7 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
   );
 
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View>
       <Carousel
         width={width}
         height={400}
