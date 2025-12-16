@@ -23,13 +23,16 @@ export const DetailMoviePage: React.FC = () => {
   const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0];
 
   const { data: detailData, isLoading } = useGetDetailMovie(slug);
-  const [selectedSeason, setSelectedSeason] = useState(0);
+  const [selectedServerIndex, setSelectedServerIndex] = useState(0);
   const scrollY = new Animated.Value(0);
 
   const movieData = detailData?.movie;
+  const episodes = detailData?.episodes || [];
 
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 200],
+  const formattedMovieData = movieData;
+
+  const headerBackgroundOpacity = scrollY.interpolate({
+    inputRange: [0, 150],
     outputRange: [0, 1],
     extrapolate: 'clamp',
   });
@@ -49,7 +52,7 @@ export const DetailMoviePage: React.FC = () => {
       left: 0,
       right: 0,
       height: 60,
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
       zIndex: 10,
       justifyContent: 'center',
       paddingHorizontal: 16,
@@ -83,7 +86,7 @@ export const DetailMoviePage: React.FC = () => {
       alignItems: 'center',
     },
     scrollContent: {
-      paddingTop: 60,
+      paddingTop: 0,
     },
     posterSection: {
       height: 350,
@@ -93,14 +96,6 @@ export const DetailMoviePage: React.FC = () => {
     posterImage: {
       width: '100%',
       height: '100%',
-    },
-    posterOverlay: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: 100,
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
     },
     infoSection: {
       paddingHorizontal: 16,
@@ -235,35 +230,28 @@ export const DetailMoviePage: React.FC = () => {
       color: '#fff',
     },
     episodeList: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
       gap: 8,
     },
     episodeItem: {
       backgroundColor: 'rgba(255, 255, 255, 0.05)',
       borderRadius: 8,
-      padding: 12,
-      flexDirection: 'row',
+      width: 56,
+      height: 56,
       alignItems: 'center',
-      gap: 12,
+      justifyContent: 'center',
     },
     episodeNumber: {
       fontSize: 12,
       fontWeight: '700',
       color: '#4A90E2',
-      minWidth: 40,
     },
     episodeName: {
-      flex: 1,
-      fontSize: 13,
-      color: colors.text,
-      fontWeight: '600',
+      display: 'none',
     },
     playIcon: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: '#4A90E2',
-      justifyContent: 'center',
-      alignItems: 'center',
+      display: 'none',
     },
     relatedMoviesSection: {
       paddingHorizontal: 16,
@@ -297,7 +285,7 @@ export const DetailMoviePage: React.FC = () => {
     },
   });
 
-  if (isLoading || !movieData) {
+  if (isLoading || !formattedMovieData) {
     return <LoadingPage message="Đang tải chi tiết phim..." />;
   }
 
@@ -309,22 +297,22 @@ export const DetailMoviePage: React.FC = () => {
       <Animated.View
         style={[
           styles.headerBackdrop,
-          { opacity: headerOpacity, marginTop: 0 },
+          {
+            backgroundColor: headerBackgroundOpacity.interpolate({
+              inputRange: [0, 1],
+              outputRange: ['rgba(0, 0, 0, 0)', colors.background],
+            }),
+            marginTop: 0,
+          },
         ]}
       >
         <View style={styles.headerContent}>
           <Pressable style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color={colors.text} />
           </Pressable>
-          <Animated.Text
-            style={[styles.headerTitle, { opacity: headerOpacity }]}
-            numberOfLines={1}
-          >
-            {movieData.name}
+          <Animated.Text style={[styles.headerTitle]} numberOfLines={1}>
+            {formattedMovieData.name}
           </Animated.Text>
-          <Pressable style={styles.shareButton}>
-            <Ionicons name="share-social" size={20} color={colors.text} />
-          </Pressable>
         </View>
       </Animated.View>
 
@@ -338,28 +326,29 @@ export const DetailMoviePage: React.FC = () => {
         )}
         showsVerticalScrollIndicator={false}
       >
-        {/* Poster Section */}
         <View style={styles.posterSection}>
           <Image
-            source={{ uri: movieData.poster_url }}
+            source={{
+              uri: formattedMovieData.poster_url,
+            }}
             style={styles.posterImage}
             resizeMode="cover"
+            defaultSource={require('@/assets/images/icon.png')}
           />
-          <View style={styles.posterOverlay} />
         </View>
 
-        {/* Info Section */}
         <View style={styles.infoSection}>
           <View style={styles.titleGroup}>
-            <Text style={styles.mainTitle}>{movieData.name}</Text>
-            <Text style={styles.originTitle}>{movieData.origin_name}</Text>
+            <Text style={styles.mainTitle}>{formattedMovieData.name}</Text>
+            <Text style={styles.originTitle}>
+              {formattedMovieData.origin_name}
+            </Text>
           </View>
 
-          {/* Meta Info */}
           <View style={styles.metaInfo}>
             <View style={styles.metaItem}>
               <Ionicons name="calendar" size={12} color="#4A90E2" />
-              <Text style={styles.metaText}>{movieData.year}</Text>
+              <Text style={styles.metaText}>{formattedMovieData.year}</Text>
             </View>
             <View style={styles.metaItem}>
               <Ionicons name="flash" size={12} color="#FFD700" />
@@ -367,27 +356,16 @@ export const DetailMoviePage: React.FC = () => {
             </View>
             <View style={styles.metaItem}>
               <Ionicons name="globe" size={12} color="#FF6B6B" />
-              <Text style={styles.metaText}>Phim lẻ</Text>
+              <Text style={styles.metaText}>{formattedMovieData.type}</Text>
             </View>
-          </View>
-
-          {/* Rating Section */}
-          <View style={styles.ratingSection}>
-            <View style={styles.ratingCard}>
-              <Text style={styles.ratingSource}>IMDb</Text>
-              <Text style={styles.ratingValue}>
-                {movieData?.imdb?.id ? movieData.imdb.id : 'N/A'}
-              </Text>
-            </View>
-            <View style={styles.ratingCard}>
-              <Text style={styles.ratingSource}>TMDb</Text>
-              <Text style={styles.ratingValue}>
-                {movieData.tmdb.vote_average.toFixed(1)}
+            <View style={styles.metaItem}>
+              <Ionicons name="star" size={12} color="#FFD700" />
+              <Text style={styles.metaText}>
+                TMDb: {formattedMovieData.tmdb.vote_average.toFixed(1)}
               </Text>
             </View>
           </View>
 
-          {/* Action Buttons */}
           <View style={styles.actionButtons}>
             <Pressable style={styles.actionButton}>
               <Ionicons name="play-circle" size={20} color="#fff" />
@@ -400,72 +378,78 @@ export const DetailMoviePage: React.FC = () => {
           </View>
         </View>
 
-        {/* Description Section */}
         <View style={styles.descriptionSection}>
           <Text style={styles.sectionTitle}>Mô tả</Text>
           <Text style={styles.descriptionText}>
-            {movieData.name} ({movieData.origin_name}) - Năm {movieData.year}
+            {formattedMovieData.name} ({formattedMovieData.origin_name}) - Năm{' '}
+            {formattedMovieData.year}
             {'\n\n'}
-            Đây là một bộ phim tuyệt vời được đánh giá cao trên các nền tảng
-            đánh giá phim hàng đầu. Bộ phim sở hữu đủ các yếu tố để mang lại một
-            trải nghiệm điện ảnh tuyệt vời cho khán giả.
+            {formattedMovieData.content}
           </Text>
         </View>
 
-        {/* Seasons/Episodes Section */}
         <View style={styles.seasonsSection}>
           <Text style={styles.sectionTitle}>Tập phim</Text>
-          <View style={styles.seasonTabs}>
-            {[1, 2, 3, 4].map((season) => (
-              <Pressable
-                key={season}
-                style={[
-                  styles.seasonTab,
-                  selectedSeason === season - 1 && styles.seasonTabActive,
-                ]}
-                onPress={() => setSelectedSeason(season - 1)}
-              >
-                <Text
-                  style={[
-                    styles.seasonTabText,
-                    selectedSeason === season - 1 && styles.seasonTabTextActive,
-                  ]}
-                >
-                  Mùa {season}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
 
-          {/* Episodes List */}
-          <View style={styles.episodeList}>
-            {[1, 2, 3, 4, 5].map((episode) => (
-              <View key={episode} style={styles.episodeItem}>
-                <Text style={styles.episodeNumber}>Tập {episode}</Text>
-                <Text style={styles.episodeName} numberOfLines={1}>
-                  {movieData.name} - Tập {episode}
-                </Text>
-                <Pressable style={styles.playIcon}>
-                  <Ionicons name="play-circle" size={20} color="#fff" />
-                </Pressable>
+          {episodes.length > 0 && (
+            <>
+              <View style={styles.seasonTabs}>
+                {episodes.map((server, index) => (
+                  <Pressable
+                    key={index}
+                    style={[
+                      styles.seasonTab,
+                      selectedServerIndex === index && styles.seasonTabActive,
+                    ]}
+                    onPress={() => setSelectedServerIndex(index)}
+                  >
+                    <Text
+                      style={[
+                        styles.seasonTabText,
+                        selectedServerIndex === index &&
+                          styles.seasonTabTextActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {server.server_name}
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
-            ))}
-          </View>
+
+              <View style={styles.episodeList}>
+                {episodes[selectedServerIndex]?.server_data.map(
+                  (episode, index) => (
+                    <View key={episode.slug} style={styles.episodeItem}>
+                      <Text style={styles.episodeNumber}>Tập {index + 1}</Text>
+                      <Text style={styles.episodeName} numberOfLines={1}>
+                        {episode.name}
+                      </Text>
+                      <Pressable style={styles.playIcon}>
+                        <Ionicons name="play-circle" size={20} color="#fff" />
+                      </Pressable>
+                    </View>
+                  )
+                )}
+              </View>
+            </>
+          )}
         </View>
 
-        {/* Related Movies Section */}
         <View style={styles.relatedMoviesSection}>
           <Text style={styles.sectionTitle}>Phim liên quan</Text>
           <View style={styles.relatedMoviesGrid}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Pressable key={i} style={styles.relatedMovieCard}>
                 <Image
-                  source={{ uri: movieData.poster_url }}
+                  source={{
+                    uri: formattedMovieData.poster_url,
+                  }}
                   style={styles.relatedMovieImage}
                   resizeMode="cover"
                 />
                 <Text style={styles.relatedMovieName} numberOfLines={2}>
-                  {movieData.name} - Phần {i}
+                  {formattedMovieData.name} - Phần {i}
                 </Text>
               </Pressable>
             ))}

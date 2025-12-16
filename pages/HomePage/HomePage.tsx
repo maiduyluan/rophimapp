@@ -6,7 +6,11 @@ import { CategoryCard } from '@/pages/HomePage/components/CategoryCard';
 import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
 import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
-import { useGetGenres, useGetNewMovies } from '@/services/api/hooks';
+import {
+  useGetCountryMovies,
+  useGetGenres,
+  useGetNewMovies,
+} from '@/services/api/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -28,6 +32,33 @@ export const HomePage: React.FC = () => {
 
   const { data: moviesData, isLoading } = useGetNewMovies(1);
   const { data: genresData } = useGetGenres();
+  const { data: americanMoviesData, isLoading: isLoadingAmerican } =
+    useGetCountryMovies('au-my', { limit: 6 });
+  const { data: vietnamMoviesData, isLoading: isLoadingVietnam } =
+    useGetCountryMovies('viet-nam', { limit: 6 });
+  const { data: koreaMoviesData, isLoading: isLoadingKorea } =
+    useGetCountryMovies('han-quoc', { limit: 6 });
+
+  const formatMovieUrl = (movie: any) => ({
+    ...movie,
+    poster_url: `https://phimimg.com/${movie.poster_url}`,
+    thumb_url: `https://phimimg.com/${movie.thumb_url}`,
+  });
+
+  const americanMovies = americanMoviesData?.items?.map(formatMovieUrl) || [];
+  const vietnamMovies = vietnamMoviesData?.items?.map(formatMovieUrl) || [];
+  const koreaMovies = koreaMoviesData?.items?.map(formatMovieUrl) || [];
+
+  const isDataLoading =
+    isLoading ||
+    isLoadingAmerican ||
+    isLoadingVietnam ||
+    isLoadingKorea ||
+    !moviesData?.items ||
+    moviesData.items.length === 0 ||
+    americanMovies.length === 0 ||
+    vietnamMovies.length === 0 ||
+    koreaMovies.length === 0;
 
   useEffect(() => {
     if (showAllGenres) {
@@ -79,7 +110,7 @@ export const HomePage: React.FC = () => {
     },
   });
 
-  if (isLoading || !moviesData?.items || moviesData.items.length === 0) {
+  if (isDataLoading || !moviesData?.items || moviesData.items.length === 0) {
     return <LoadingPage message="Đang tải phim..." />;
   }
 
@@ -123,7 +154,7 @@ export const HomePage: React.FC = () => {
             <View style={styles.movieSliderSection}>
               <MovieSlider
                 title="Phim Hàn Quốc mới"
-                movies={moviesData?.items.slice(0, 6) || []}
+                movies={koreaMovies}
                 gradientColors={['#7B68EE', '#4A90E2', '#FF6B6B']}
                 onMoviePress={(movie) => {
                   // Handle movie press
@@ -134,26 +165,26 @@ export const HomePage: React.FC = () => {
               />
 
               <MovieSlider
-                title="Phim Trung Quốc mới"
-                movies={moviesData?.items.slice(0, 6) || []}
+                title="Phim Âu Mỹ mới"
+                movies={americanMovies}
                 gradientColors={['#FF6B6B', '#FFA500', '#FFD700']}
                 onMoviePress={(movie) => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  // Navigate to all Chinese movies
+                  // Navigate to all American movies
                 }}
               />
 
               <MovieSlider
-                title="Phim US-UK mới"
-                movies={moviesData?.items.slice(0, 6) || []}
+                title="Phim Việt Nam mới"
+                movies={vietnamMovies}
                 gradientColors={['#4A90E2', '#00CED1', '#32CD32']}
                 onMoviePress={(movie) => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  // Navigate to all Chinese movies
+                  // Navigate to all Vietnamese movies
                 }}
               />
             </View>

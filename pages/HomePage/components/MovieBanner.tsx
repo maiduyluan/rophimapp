@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -18,7 +18,6 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
   movies,
   onPress,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
   const { width } = Dimensions.get('window');
 
   if (movies.length === 0) {
@@ -134,7 +133,6 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
         data={movies}
         renderItem={renderItem}
         onSnapToItem={(index) => {
-          setActiveIndex(index);
           onPress?.(index);
         }}
         autoPlay
