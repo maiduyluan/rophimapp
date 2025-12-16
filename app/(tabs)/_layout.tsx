@@ -1,33 +1,77 @@
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.tint,
+        tabBarInactiveTintColor: colors.tabIconDefault,
+        tabBarStyle: {
+          backgroundColor: colors.background,
+          borderTopColor: colors.tabIconDefault,
+        },
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+          tabBarLabel: 'Home',
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="series"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Series',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="play-circle" size={size} color={color} />
+          ),
+          tabBarLabel: 'Series',
+        }}
+      />
+
+      <Tabs.Screen
+        name="tvshows"
+        options={{
+          title: 'TV Shows',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="tv" size={size} color={color} />
+          ),
+          tabBarLabel: 'TV Shows',
+        }}
+      />
+
+      <Tabs.Screen
+        name="cartoon"
+        options={{
+          title: 'Cartoon',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="color-palette" size={size} color={color} />
+          ),
+          tabBarLabel: 'Cartoon',
+        }}
+      />
+
+      <Tabs.Screen
+        name="cinema"
+        options={{
+          title: 'Cinema',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="film" size={size} color={color} />
+          ),
+          tabBarLabel: 'Cinema',
         }}
       />
     </Tabs>
