@@ -1,9 +1,11 @@
 import { LoadingPage } from '@/components/LoadingPage';
+import { Header } from '@/components/layout';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CategoryCard } from '@/pages/HomePage/components/CategoryCard';
 import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
+import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
 import { useGetGenres, useGetNewMovies } from '@/services/api/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -62,7 +64,7 @@ export const HomePage: React.FC = () => {
     titleSection: {
       fontSize: 28,
       fontWeight: '700',
-      color: colors.text,
+      color: '#fff',
     },
     categoriesContainer: {
       flexDirection: 'row',
@@ -87,6 +89,7 @@ export const HomePage: React.FC = () => {
       style={styles.safeContainer}
       edges={['bottom', 'left', 'right']}
     >
+      <Header onMenuPress={() => {}} onSearchPress={() => {}} />
       <View style={{ flex: 1 }}>
         <ScrollView
           style={styles.container}
@@ -109,16 +112,38 @@ export const HomePage: React.FC = () => {
               onViewMore={() => setShowAllGenres(true)}
             />
           </View>
-        </ScrollView>
 
-        <GenresDrawer
-          visible={showAllGenres}
-          genres={genresData || []}
-          slideAnim={slideAnim}
-          onClose={() => setShowAllGenres(false)}
-          title="Các chủ đề"
-        />
+          <MovieSlider
+            title="Phim Hàn Quốc mới"
+            movies={moviesData?.items.slice(0, 6) || []}
+            onMoviePress={(movie) => {
+              // Handle movie press
+            }}
+            onViewMore={() => {
+              // Navigate to all Korean movies
+            }}
+          />
+
+          <MovieSlider
+            title="Phim Trung Quốc mới"
+            movies={moviesData?.items.slice(6, 12) || []}
+            onMoviePress={(movie) => {
+              // Handle movie press
+            }}
+            onViewMore={() => {
+              // Navigate to all Chinese movies
+            }}
+          />
+        </ScrollView>
       </View>
+
+      <GenresDrawer
+        visible={showAllGenres}
+        genres={genresData || []}
+        slideAnim={slideAnim}
+        onClose={() => setShowAllGenres(false)}
+        title="Các chủ đề"
+      />
     </SafeAreaView>
   );
 };

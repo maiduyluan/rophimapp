@@ -36,7 +36,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     },
     cardContainer: {
       width: 120,
-      height: 50,
+      height: 70,
       borderRadius: 12,
       overflow: 'hidden',
     },

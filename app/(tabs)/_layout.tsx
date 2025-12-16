@@ -6,7 +6,7 @@ import React from 'react';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
+  const colors = Colors[colorScheme ?? 'dark'];
 
   return (
     <Tabs
@@ -14,10 +14,14 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.tint,
         tabBarInactiveTintColor: colors.tabIconDefault,
         tabBarStyle: {
-          backgroundColor: colors.background,
-          borderTopColor: colors.tabIconDefault,
+          backgroundColor: '#000',
+          borderTopColor: '#2e2d2dff',
         },
         headerShown: false,
+        sceneStyle: {
+          backgroundColor: colors.background,
+          marginBottom: -50,
+        },
       }}
     >
       <Tabs.Screen

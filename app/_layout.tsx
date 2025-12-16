@@ -5,9 +5,10 @@ import {
 } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 import 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Header } from '@/components/layout';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { RootProvider } from '@/providers/RootProvider';
 
@@ -17,20 +18,20 @@ export const unstable_settings = {
 
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: true,
-            header: () => (
-              <Header onMenuPress={() => {}} onSearchPress={() => {}} />
-            ),
-          }}
-        />
-      </Stack>
+      <View style={{ flex: 1, paddingTop: insets.top }}>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </View>
       <StatusBar style="auto" />
     </ThemeProvider>
   );

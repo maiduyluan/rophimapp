@@ -8,7 +8,7 @@ interface ThemeState {
 }
 
 const initialState: ThemeState = {
-  colorScheme: 'system',
+  colorScheme: 'dark',
   systemColorScheme: null,
 };
 
