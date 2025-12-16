@@ -332,7 +332,7 @@ export const DetailMoviePage: React.FC = () => {
               uri: formattedMovieData.poster_url,
             }}
             style={styles.posterImage}
-            resizeMode="cover"
+            resizeMode="stretch"
             defaultSource={require('@/assets/images/icon.png')}
           />
         </View>
