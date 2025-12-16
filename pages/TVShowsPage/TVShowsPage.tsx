@@ -1,8 +1,7 @@
-import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export const TVShowsPage: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -29,10 +28,8 @@ export const TVShowsPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>📺 TV Shows</ThemedText>
-      <ThemedText style={styles.subtitle}>
-        Chương trình truyền hình nổi tiếng
-      </ThemedText>
+      <Text style={styles.title}>📺 TV Shows</Text>
+      <Text style={styles.subtitle}>Chương trình truyền hình nổi tiếng</Text>
     </View>
   );
 };

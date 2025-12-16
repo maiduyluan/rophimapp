@@ -1,8 +1,7 @@
-import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export const CartoonPage: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -29,8 +28,8 @@ export const CartoonPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>🎨 Cartoon</ThemedText>
-      <ThemedText style={styles.subtitle}>Hoạt hình hay nhất</ThemedText>
+      <Text style={styles.title}>🎨 Cartoon</Text>
+      <Text style={styles.subtitle}>Hoạt hình hay nhất</Text>
     </View>
   );
 };
