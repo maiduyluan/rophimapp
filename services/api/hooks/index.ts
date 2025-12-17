@@ -1,5 +1,7 @@
+export * from './cartoon';
 export * from './country';
 export * from './detailMovie';
 export * from './genre';
+export * from './list';
 export * from './newMovie';
 export * from './search';

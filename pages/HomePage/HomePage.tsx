@@ -8,6 +8,7 @@ import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
 import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
 import {
+  useGetCartoonMovies,
   useGetCountryMovies,
   useGetGenreMovies,
   useGetGenres,
@@ -42,8 +43,8 @@ export const HomePage: React.FC = () => {
     useGetCountryMovies('han-quoc', { limit: 6, sort_field: 'modified.time' });
   const { data: fictionMovieData, isLoading: isLoadingFiction } =
     useGetGenreMovies('vien-tuong', { sort_field: 'modified.time' });
-  const { data: cartoonMovieData, isLoading: isLoadingCartoon } =
-    useGetGenreMovies('tre-em', { limit: 10, sort_field: 'modified.time' });
+  const { data: cartoonMoviesData, isLoading: isLoadingCartoon } =
+    useGetCartoonMovies();
 
   const formatMovieUrl = (movie: any) => ({
     ...movie,
@@ -56,8 +57,7 @@ export const HomePage: React.FC = () => {
   const koreaMovies = koreaMoviesData?.items?.map(formatMovieUrl) || [];
   const fictionMovies =
     fictionMovieData?.data?.items?.map(formatMovieUrl) || [];
-  const cartoonMovies =
-    cartoonMovieData?.data?.items?.map(formatMovieUrl) || [];
+  const formattedCartoonMovies = cartoonMoviesData?.map(formatMovieUrl) || [];
 
   const isDataLoading =
     isLoading ||
@@ -72,7 +72,7 @@ export const HomePage: React.FC = () => {
     vietnamMovies.length === 0 ||
     koreaMovies.length === 0 ||
     fictionMovies.length === 0 ||
-    cartoonMovies.length === 0;
+    formattedCartoonMovies.length === 0;
 
   useEffect(() => {
     if (showAllGenres) {
@@ -223,7 +223,7 @@ export const HomePage: React.FC = () => {
           <View style={styles.categorySection}>
             <Text style={styles.titleSection}>Kho Tàng Anime Mới Nhất</Text>
             <AnimeCarousel
-              animes={cartoonMovies.map((movie: any) => ({
+              animes={formattedCartoonMovies.map((movie: any) => ({
                 ...movie,
                 thumb_url: movie.thumb_url || movie.poster_url,
               }))}
