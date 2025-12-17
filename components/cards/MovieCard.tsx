@@ -1,12 +1,6 @@
+import { Image as ExpoImage } from 'expo-image';
 import React from 'react';
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface Movie {
   _id: string;
@@ -30,20 +24,17 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   onPress,
   width,
 }) => {
-  const { width: screenWidth } = Dimensions.get('window');
-  const cardWidth = width || (screenWidth - 40) / 3;
-  const cardHeight = (cardWidth * 3) / 2;
-
   const styles = StyleSheet.create({
     movieCard: {
-      width: cardWidth,
+      width: width || '100%',
+      aspectRatio: 2 / 3,
       borderRadius: 8,
       overflow: 'hidden',
       backgroundColor: '#2a2a2a',
     },
     movieImage: {
       width: '100%',
-      height: cardHeight,
+      aspectRatio: 2 / 3,
       backgroundColor: '#1a1a1a',
     },
     movieOverlay: {
@@ -93,10 +84,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       onPress={() => onPress(movie)}
       android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
     >
-      <Image
+      <ExpoImage
         source={{ uri: movie.poster_url }}
         style={styles.movieImage}
-        resizeMode="cover"
+        contentFit="cover"
+        cachePolicy="memory-disk"
       />
       <View style={styles.movieOverlay}>
         {(movie.quality || movie.episode_current) && (

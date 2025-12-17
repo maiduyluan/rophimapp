@@ -2,12 +2,14 @@ import { LoadingPage } from '@/components/LoadingPage';
 import { Header } from '@/components/layout';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AnimeCarousel } from '@/pages/HomePage/components/AnimeCarousel';
 import { CategoryCard } from '@/pages/HomePage/components/CategoryCard';
 import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
 import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
 import {
   useGetCountryMovies,
+  useGetGenreMovies,
   useGetGenres,
   useGetNewMovies,
 } from '@/services/api/hooks';
@@ -33,11 +35,15 @@ export const HomePage: React.FC = () => {
   const { data: moviesData, isLoading } = useGetNewMovies(1);
   const { data: genresData } = useGetGenres();
   const { data: americanMoviesData, isLoading: isLoadingAmerican } =
-    useGetCountryMovies('au-my', { limit: 6 });
+    useGetCountryMovies('au-my', { limit: 6, sort_field: 'modified.time' });
   const { data: vietnamMoviesData, isLoading: isLoadingVietnam } =
-    useGetCountryMovies('viet-nam', { limit: 6 });
+    useGetCountryMovies('viet-nam', { limit: 6, sort_field: 'modified.time' });
   const { data: koreaMoviesData, isLoading: isLoadingKorea } =
-    useGetCountryMovies('han-quoc', { limit: 6 });
+    useGetCountryMovies('han-quoc', { limit: 6, sort_field: 'modified.time' });
+  const { data: fictionMovieData, isLoading: isLoadingFiction } =
+    useGetGenreMovies('vien-tuong', { sort_field: 'modified.time' });
+  const { data: cartoonMovieData, isLoading: isLoadingCartoon } =
+    useGetGenreMovies('tre-em', { limit: 10, sort_field: 'modified.time' });
 
   const formatMovieUrl = (movie: any) => ({
     ...movie,
@@ -48,17 +54,25 @@ export const HomePage: React.FC = () => {
   const americanMovies = americanMoviesData?.items?.map(formatMovieUrl) || [];
   const vietnamMovies = vietnamMoviesData?.items?.map(formatMovieUrl) || [];
   const koreaMovies = koreaMoviesData?.items?.map(formatMovieUrl) || [];
+  const fictionMovies =
+    fictionMovieData?.data?.items?.map(formatMovieUrl) || [];
+  const cartoonMovies =
+    cartoonMovieData?.data?.items?.map(formatMovieUrl) || [];
 
   const isDataLoading =
     isLoading ||
     isLoadingAmerican ||
     isLoadingVietnam ||
     isLoadingKorea ||
+    isLoadingFiction ||
+    isLoadingCartoon ||
     !moviesData?.items ||
     moviesData.items.length === 0 ||
     americanMovies.length === 0 ||
     vietnamMovies.length === 0 ||
-    koreaMovies.length === 0;
+    koreaMovies.length === 0 ||
+    fictionMovies.length === 0 ||
+    cartoonMovies.length === 0;
 
   useEffect(() => {
     if (showAllGenres) {
@@ -188,6 +202,38 @@ export const HomePage: React.FC = () => {
                 }}
               />
             </View>
+          </View>
+
+          <View style={styles.categorySection}>
+            <MovieSlider
+              title="Top 10 phim viễn tưởng"
+              movies={fictionMovies}
+              gradientColors={['#fff', '#fff', '#fff']}
+              displayLimit={10}
+              showViewMoreButton={false}
+              onMoviePress={(movie) => {
+                // Handle movie press
+              }}
+              onViewMore={() => {
+                // Navigate to all Vietnamese movies
+              }}
+            />
+          </View>
+
+          <View style={styles.categorySection}>
+            <Text style={styles.titleSection}>Kho Tàng Anime Mới Nhất</Text>
+            <AnimeCarousel
+              animes={cartoonMovies.map((movie: any) => ({
+                ...movie,
+                thumb_url: movie.thumb_url || movie.poster_url,
+              }))}
+              onPress={(anime) => {
+                // Handle anime press
+              }}
+              onViewMore={() => {
+                // Navigate to all animes
+              }}
+            />
           </View>
         </ScrollView>
       </View>

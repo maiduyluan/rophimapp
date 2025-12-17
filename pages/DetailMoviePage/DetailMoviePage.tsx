@@ -3,16 +3,10 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useGetDetailMovie } from '@/services/api/hooks';
 import { Ionicons } from '@expo/vector-icons';
+import { Image as ExpoImage } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import {
-  Animated,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const DetailMoviePage: React.FC = () => {
@@ -327,13 +321,11 @@ export const DetailMoviePage: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.posterSection}>
-          <Image
-            source={{
-              uri: formattedMovieData.poster_url,
-            }}
+          <ExpoImage
+            source={{ uri: formattedMovieData.poster_url }}
             style={styles.posterImage}
-            resizeMode="stretch"
-            defaultSource={require('@/assets/images/icon.png')}
+            contentFit="fill"
+            cachePolicy="memory-disk"
           />
         </View>
 
@@ -441,12 +433,11 @@ export const DetailMoviePage: React.FC = () => {
           <View style={styles.relatedMoviesGrid}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Pressable key={i} style={styles.relatedMovieCard}>
-                <Image
-                  source={{
-                    uri: formattedMovieData.poster_url,
-                  }}
+                <ExpoImage
+                  source={{ uri: formattedMovieData.poster_url }}
                   style={styles.relatedMovieImage}
-                  resizeMode="cover"
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
                 />
                 <Text style={styles.relatedMovieName} numberOfLines={2}>
                   {formattedMovieData.name} - Phần {i}

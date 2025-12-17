@@ -29,6 +29,8 @@ interface MovieSliderProps {
   onMoviePress?: (movie: Movie) => void;
   onViewMore?: () => void;
   gradientColors?: string[];
+  displayLimit?: number;
+  showViewMoreButton?: boolean;
 }
 
 export const MovieSlider: React.FC<MovieSliderProps> = ({
@@ -37,6 +39,8 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
   onMoviePress,
   onViewMore,
   gradientColors = ['#7B68EE', '#4A90E2', '#FF6B6B'],
+  displayLimit = 6,
+  showViewMoreButton = true,
 }) => {
   const router = useRouter();
   const { width } = Dimensions.get('window');
@@ -85,7 +89,7 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
     return null;
   }
 
-  const displayedMovies = movies.slice(0, 6);
+  const displayedMovies = movies.slice(0, displayLimit);
 
   return (
     <View>
@@ -111,7 +115,7 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
             />
           </MaskedView>
         </View>
-        {displayedMovies.length > 0 && (
+        {displayedMovies.length > 0 && showViewMoreButton && (
           <Pressable
             style={styles.viewMoreButton}
             onPress={onViewMore}

@@ -36,6 +36,12 @@ function RootLayoutContent() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="search"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </View>
       <StatusBar style="auto" />

@@ -1,5 +1,6 @@
+import { Image as ExpoImage } from 'expo-image';
 import React from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 interface MovieItem {
@@ -105,10 +106,11 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
 
   const renderItem = ({ item, index }: { item: MovieItem; index: number }) => (
     <View style={styles.container}>
-      <Image
+      <ExpoImage
         source={{ uri: item.backgroundImage }}
         style={styles.backgroundImage}
-        resizeMode="stretch"
+        contentFit="fill"
+        cachePolicy="memory-disk"
       />
       <View style={styles.overlay}>
         <View style={styles.content}>
