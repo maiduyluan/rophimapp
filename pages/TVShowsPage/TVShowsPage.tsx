@@ -1,4 +1,5 @@
 import { LoadingPage } from '@/components/LoadingPage';
+import { Header } from '@/components/layout';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CartoonMovieCard } from '@/pages/CartoonPage/components';
@@ -9,7 +10,6 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -89,7 +89,13 @@ export const TVShowsPage: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Text style={[styles.header, styles.title]}>TV Shows</Text>
+      <Header
+        title="TV Shows"
+        onSearchPress={() => {
+          // Handle search
+        }}
+        showSearchIcon={false}
+      />
       <FlatList
         data={allMovies.map(formatMovieUrl)}
         renderItem={({ item }) => <CartoonMovieCard movie={item} />}

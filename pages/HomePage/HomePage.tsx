@@ -1,5 +1,5 @@
 import { LoadingPage } from '@/components/LoadingPage';
-import { Header } from '@/components/layout';
+import { Header, SearchInput } from '@/components/layout';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AnimeCarousel } from '@/pages/HomePage/components/AnimeCarousel';
@@ -27,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const HomePage: React.FC = () => {
   const [showAllGenres, setShowAllGenres] = useState(false);
+  const [showSearchHeader, setShowSearchHeader] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const slideAnim = useRef(
@@ -95,6 +96,15 @@ export const HomePage: React.FC = () => {
       flex: 1,
       backgroundColor: colors.background,
     },
+    header: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+    },
     container: {
       flex: 1,
       backgroundColor: colors.background,
@@ -140,7 +150,20 @@ export const HomePage: React.FC = () => {
       style={styles.safeContainer}
       edges={['bottom', 'left', 'right']}
     >
-      <Header onMenuPress={() => {}} onSearchPress={() => {}} />
+      {showSearchHeader && (
+        <SearchInput
+          onMenuPress={() => {}}
+          onSearchPress={() => {}}
+          showSearchHeader={showSearchHeader}
+          onCloseSearch={() => setShowSearchHeader(false)}
+        />
+      )}
+      {!showSearchHeader && (
+        <Header
+          title="Trang chủ"
+          onSearchPress={() => setShowSearchHeader(true)}
+        />
+      )}
       <View style={{ flex: 1 }}>
         <ScrollView
           style={styles.container}

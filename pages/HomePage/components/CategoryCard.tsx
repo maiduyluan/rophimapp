@@ -27,7 +27,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
   const styles = StyleSheet.create({
     scrollContainer: {
-      marginTop: 12,
       overflow: 'hidden',
       borderRadius: 8,
     },

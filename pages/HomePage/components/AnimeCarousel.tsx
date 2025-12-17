@@ -148,13 +148,6 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
       : `https://phimimg.com/${item.thumb_url || item.poster_url}`;
 
     const categories = item.category?.slice(0, 3).map((cat) => cat.name) || [];
-
-    const maxDescLength = 120;
-    const displayDesc =
-      (item.content || '')
-        .substring(0, maxDescLength)
-        .replace(/<[^>]*>/g, '') || 'Không có mô tả';
-
     return (
       <View style={styles.carouselItem}>
         <ExpoImage
@@ -201,11 +194,6 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
                 ))}
               </View>
             )}
-
-            <Text style={styles.description} numberOfLines={2}>
-              {displayDesc}
-              {displayDesc.length >= maxDescLength ? '...' : ''}
-            </Text>
           </View>
         </View>
       </View>
