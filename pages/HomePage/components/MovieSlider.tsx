@@ -1,4 +1,5 @@
 import { MovieCard } from '@/components/cards';
+import { Ionicons } from '@expo/vector-icons';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -121,7 +122,7 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
             onPress={onViewMore}
             android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
           >
-            <Text style={styles.viewMoreText}>Xem toàn bộ →</Text>
+            <Ionicons name="chevron-forward" size={24} color={'#fff'} />
           </Pressable>
         )}
       </View>

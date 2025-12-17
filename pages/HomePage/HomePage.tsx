@@ -14,11 +14,13 @@ import {
   useGetGenres,
   useGetNewMovies,
 } from '@/services/api/hooks';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -134,6 +136,16 @@ export const HomePage: React.FC = () => {
       paddingHorizontal: 16,
       borderRadius: 10,
     },
+    animeHeaderContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    viewMoreButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+    },
   });
 
   if (isDataLoading || !moviesData?.items || moviesData.items.length === 0) {
@@ -204,7 +216,7 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  // Navigate to all Korean movies
+                  router.push('/korea-movies');
                 }}
               />
 
@@ -216,7 +228,7 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  // Navigate to all American movies
+                  router.push('/america-movies');
                 }}
               />
 
@@ -228,7 +240,7 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  // Navigate to all Vietnamese movies
+                  router.push('/vietnam-movies');
                 }}
               />
             </View>
@@ -251,7 +263,18 @@ export const HomePage: React.FC = () => {
           </View>
 
           <View style={styles.categorySection}>
-            <Text style={styles.titleSection}>Kho Tàng Anime Mới Nhất</Text>
+            <View style={styles.animeHeaderContainer}>
+              <Text style={styles.titleSection}>Kho Tàng Anime Mới Nhất</Text>
+              <Pressable
+                style={styles.viewMoreButton}
+                onPress={() => {
+                  router.push('/anime-list');
+                }}
+                android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
+              >
+                <Ionicons name="chevron-forward" size={24} color={'#fff'} />
+              </Pressable>
+            </View>
             <AnimeCarousel
               animes={formattedCartoonMovies.map((movie: any) => ({
                 ...movie,
@@ -264,7 +287,7 @@ export const HomePage: React.FC = () => {
                 });
               }}
               onViewMore={() => {
-                // Navigate to all animes
+                router.push('/anime-list');
               }}
             />
           </View>

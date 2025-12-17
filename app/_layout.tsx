@@ -42,6 +42,30 @@ function RootLayoutContent() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="korea-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="america-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="vietnam-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="anime-list"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </View>
       <StatusBar style="auto" />
