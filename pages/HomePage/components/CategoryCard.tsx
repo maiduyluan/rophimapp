@@ -29,6 +29,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     scrollContainer: {
       overflow: 'hidden',
       borderRadius: 8,
+      marginTop: 24,
     },
     categoriesContainer: {
       flexDirection: 'row',

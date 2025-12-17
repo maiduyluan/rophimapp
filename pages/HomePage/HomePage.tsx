@@ -39,7 +39,7 @@ export const HomePage: React.FC = () => {
   ).current;
 
   const { data: moviesData, isLoading } = useGetNewMovies(1);
-  const { data: genresData } = useGetGenres();
+  const { data: genresData, isLoading: isLoadingGenres } = useGetGenres();
   const { data: americanMoviesData, isLoading: isLoadingAmerican } =
     useGetCountryMovies('au-my', { limit: 6, sort_field: 'modified.time' });
   const { data: vietnamMoviesData, isLoading: isLoadingVietnam } =
@@ -71,6 +71,7 @@ export const HomePage: React.FC = () => {
     isLoadingKorea ||
     isLoadingFiction ||
     isLoadingCartoon ||
+    isLoadingGenres ||
     !moviesData?.items ||
     moviesData.items.length === 0 ||
     americanMovies.length === 0 ||

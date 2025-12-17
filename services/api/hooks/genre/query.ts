@@ -6,8 +6,12 @@ export const useGetGenres = () => {
   return useQuery({
     queryKey: ['genres'],
     queryFn: async (): Promise<Genre[]> => {
-      const response = await apiClient.get<Genre[]>('/v1/api/the-loai');
-      return response.data;
+      try {
+        const response = await apiClient.get('/the-loai');
+        return response.data?.data || response.data;
+      } catch (error) {
+        throw error;
+      }
     },
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 60,

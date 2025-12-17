@@ -40,7 +40,6 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
     container: {
       width: '100%',
       overflow: 'hidden',
-      paddingVertical: 16,
     },
     carouselItem: {
       width: width,
