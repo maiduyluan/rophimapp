@@ -1,6 +1,6 @@
 import { Image as ExpoImage } from 'expo-image';
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 interface MovieItem {
@@ -8,6 +8,7 @@ interface MovieItem {
   subtitle: string;
   year: string;
   backgroundImage: string;
+  slug?: string;
 }
 
 interface MovieBannerProps {
@@ -105,7 +106,7 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
   });
 
   const renderItem = ({ item, index }: { item: MovieItem; index: number }) => (
-    <View style={styles.container}>
+    <Pressable onPress={() => onPress?.(index)} style={styles.container}>
       <ExpoImage
         source={{ uri: item.backgroundImage }}
         style={styles.backgroundImage}
@@ -124,7 +125,7 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 
   return (
@@ -135,7 +136,7 @@ export const MovieBanner: React.FC<MovieBannerProps> = ({
         data={movies}
         renderItem={renderItem}
         onSnapToItem={(index) => {
-          onPress?.(index);
+          // ignore
         }}
         autoPlay
         autoPlayInterval={3000}

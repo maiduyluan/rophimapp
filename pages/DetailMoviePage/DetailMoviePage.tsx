@@ -1,13 +1,22 @@
 import { LoadingPage } from '@/components/LoadingPage';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useGetDetailMovie } from '@/services/api/hooks';
+import { useGetDetailMovie, useGetListMovies } from '@/services/api/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import { Image as ExpoImage } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { VideoPlayerModal } from './components';
+
+interface Episode {
+  name: string;
+  slug: string;
+  filename: string;
+  link_embed: string;
+  link_m3u8: string;
+}
 
 export const DetailMoviePage: React.FC = () => {
   const colorScheme = useColorScheme();
@@ -18,10 +27,37 @@ export const DetailMoviePage: React.FC = () => {
 
   const { data: detailData, isLoading } = useGetDetailMovie(slug);
   const [selectedServerIndex, setSelectedServerIndex] = useState(0);
+  const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const scrollY = new Animated.Value(0);
 
   const movieData = detailData?.movie;
   const episodes = detailData?.episodes || [];
+
+  const getTypeList = (
+    type: string | undefined
+  ): 'phim-bo' | 'phim-le' | null => {
+    switch (type) {
+      case 'series':
+        return 'phim-bo';
+      case 'single':
+        return 'phim-le';
+      default:
+        return null;
+    }
+  };
+
+  const typeList = movieData ? getTypeList(movieData.type) : null;
+  const relatedMoviesParams =
+    typeList && movieData
+      ? {
+          type_list: typeList,
+          limit: 6,
+          sort_field: 'modified.time',
+        }
+      : undefined;
+
+  const { data: relatedMovies = [] } = useGetListMovies(relatedMoviesParams);
 
   const formattedMovieData = movieData;
 
@@ -236,10 +272,16 @@ export const DetailMoviePage: React.FC = () => {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    episodeItemActive: {
+      backgroundColor: '#4A90E2',
+    },
     episodeNumber: {
       fontSize: 12,
       fontWeight: '700',
       color: '#4A90E2',
+    },
+    episodeNumberActive: {
+      color: '#fff',
     },
     episodeName: {
       display: 'none',
@@ -274,10 +316,14 @@ export const DetailMoviePage: React.FC = () => {
       fontSize: 11,
       color: colors.text,
       fontWeight: '600',
-      padding: 8,
       lineHeight: 14,
     },
   });
+
+  const handleEpisodePress = (episode: Episode) => {
+    setSelectedEpisode(episode);
+    setModalVisible(true);
+  };
 
   if (isLoading || !formattedMovieData) {
     return <LoadingPage message="Đang tải chi tiết phim..." />;
@@ -357,17 +403,6 @@ export const DetailMoviePage: React.FC = () => {
               </Text>
             </View>
           </View>
-
-          <View style={styles.actionButtons}>
-            <Pressable style={styles.actionButton}>
-              <Ionicons name="play-circle" size={20} color="#fff" />
-              <Text style={[styles.buttonText, { color: '#fff' }]}>Xem</Text>
-            </Pressable>
-            <Pressable style={styles.actionButtonSecondary}>
-              <Ionicons name="bookmark" size={20} color={colors.text} />
-              <Text style={styles.buttonText}>Lưu</Text>
-            </Pressable>
-          </View>
         </View>
 
         <View style={styles.descriptionSection}>
@@ -381,72 +416,134 @@ export const DetailMoviePage: React.FC = () => {
         </View>
 
         <View style={styles.seasonsSection}>
-          <Text style={styles.sectionTitle}>Tập phim</Text>
+          <Text style={styles.sectionTitle}>
+            {formattedMovieData.type === 'single' ? 'Phim' : 'Tập phim'}
+          </Text>
 
-          {episodes.length > 0 && (
-            <>
-              <View style={styles.seasonTabs}>
-                {episodes.map((server, index) => (
+          {formattedMovieData.type === 'single' ? (
+            <View style={styles.episodeList}>
+              {episodes.length > 0 &&
+                episodes[selectedServerIndex]?.server_data[0] && (
                   <Pressable
-                    key={index}
                     style={[
-                      styles.seasonTab,
-                      selectedServerIndex === index && styles.seasonTabActive,
+                      styles.episodeItem,
+                      {
+                        width: 'auto',
+                        paddingHorizontal: 24,
+                      },
+                      selectedEpisode?.slug ===
+                        episodes[selectedServerIndex]?.server_data[0]?.slug &&
+                        styles.episodeItemActive,
                     ]}
-                    onPress={() => setSelectedServerIndex(index)}
+                    onPress={() =>
+                      handleEpisodePress(
+                        episodes[selectedServerIndex]?.server_data[0]
+                      )
+                    }
                   >
                     <Text
                       style={[
-                        styles.seasonTabText,
-                        selectedServerIndex === index &&
-                          styles.seasonTabTextActive,
+                        styles.episodeNumber,
+                        selectedEpisode?.slug ===
+                          episodes[selectedServerIndex]?.server_data[0]?.slug &&
+                          styles.episodeNumberActive,
                       ]}
-                      numberOfLines={1}
                     >
-                      {server.server_name}
+                      Full
                     </Text>
                   </Pressable>
-                ))}
-              </View>
-
-              <View style={styles.episodeList}>
-                {episodes[selectedServerIndex]?.server_data.map(
-                  (episode, index) => (
-                    <View key={episode.slug} style={styles.episodeItem}>
-                      <Text style={styles.episodeNumber}>Tập {index + 1}</Text>
-                      <Text style={styles.episodeName} numberOfLines={1}>
-                        {episode.name}
-                      </Text>
-                      <Pressable style={styles.playIcon}>
-                        <Ionicons name="play-circle" size={20} color="#fff" />
-                      </Pressable>
-                    </View>
-                  )
                 )}
-              </View>
-            </>
+            </View>
+          ) : (
+            episodes.length > 0 && (
+              <>
+                <View style={styles.seasonTabs}>
+                  {episodes.map((server, index) => (
+                    <Pressable
+                      key={index}
+                      style={[
+                        styles.seasonTab,
+                        selectedServerIndex === index && styles.seasonTabActive,
+                      ]}
+                      onPress={() => setSelectedServerIndex(index)}
+                    >
+                      <Text
+                        style={[
+                          styles.seasonTabText,
+                          selectedServerIndex === index &&
+                            styles.seasonTabTextActive,
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {server.server_name}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+
+                <View style={styles.episodeList}>
+                  {episodes[selectedServerIndex]?.server_data.map(
+                    (episode, index) => (
+                      <Pressable
+                        key={episode.slug}
+                        style={[
+                          styles.episodeItem,
+                          selectedEpisode?.slug === episode.slug &&
+                            styles.episodeItemActive,
+                        ]}
+                        onPress={() => handleEpisodePress(episode)}
+                      >
+                        <Text
+                          style={[
+                            styles.episodeNumber,
+                            selectedEpisode?.slug === episode.slug &&
+                              styles.episodeNumberActive,
+                          ]}
+                        >
+                          Tập {index + 1}
+                        </Text>
+                      </Pressable>
+                    )
+                  )}
+                </View>
+              </>
+            )
           )}
         </View>
 
         <View style={styles.relatedMoviesSection}>
           <Text style={styles.sectionTitle}>Phim liên quan</Text>
           <View style={styles.relatedMoviesGrid}>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Pressable key={i} style={styles.relatedMovieCard}>
-                <ExpoImage
-                  source={{ uri: formattedMovieData.poster_url }}
-                  style={styles.relatedMovieImage}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
-                <Text style={styles.relatedMovieName} numberOfLines={2}>
-                  {formattedMovieData.name} - Phần {i}
-                </Text>
-              </Pressable>
-            ))}
+            {relatedMovies?.length > 0 ? (
+              relatedMovies?.map((movie) => (
+                <Pressable key={movie._id} style={styles.relatedMovieCard}>
+                  <ExpoImage
+                    source={{
+                      uri: `https://phimimg.com/${movie.poster_url}`,
+                    }}
+                    style={styles.relatedMovieImage}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                  <Text style={styles.relatedMovieName} numberOfLines={2}>
+                    {movie.name}
+                  </Text>
+                </Pressable>
+              ))
+            ) : (
+              <Text style={styles.relatedMovieName}>
+                Không có phim liên quan
+              </Text>
+            )}
           </View>
         </View>
       </Animated.ScrollView>
+
+      <VideoPlayerModal
+        visible={modalVisible}
+        episode={selectedEpisode}
+        onClose={() => setModalVisible(false)}
+      />
     </SafeAreaView>
   );
 };

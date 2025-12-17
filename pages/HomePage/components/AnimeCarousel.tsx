@@ -1,6 +1,6 @@
 import { Image as ExpoImage } from 'expo-image';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 interface AnimeItem {
@@ -149,7 +149,7 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
 
     const categories = item.category?.slice(0, 3).map((cat) => cat.name) || [];
     return (
-      <View style={styles.carouselItem}>
+      <Pressable onPress={() => onPress?.(item)} style={styles.carouselItem}>
         <ExpoImage
           source={{ uri: imageUrl }}
           style={styles.backgroundImage}
@@ -196,7 +196,7 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
             )}
           </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
@@ -209,7 +209,6 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
         renderItem={renderItem}
         onSnapToItem={(index) => {
           setActiveIndex(index);
-          onPress?.(animes[index]);
         }}
         autoPlay
         autoPlayInterval={5000}

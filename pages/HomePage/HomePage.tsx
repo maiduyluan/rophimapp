@@ -14,6 +14,7 @@ import {
   useGetGenres,
   useGetNewMovies,
 } from '@/services/api/hooks';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -26,6 +27,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const HomePage: React.FC = () => {
+  const router = useRouter();
   const [showAllGenres, setShowAllGenres] = useState(false);
   const [showSearchHeader, setShowSearchHeader] = useState(false);
   const colorScheme = useColorScheme();
@@ -143,6 +145,7 @@ export const HomePage: React.FC = () => {
     subtitle: movie.origin_name,
     year: movie.year.toString(),
     backgroundImage: movie.poster_url,
+    slug: movie.slug,
   }));
 
   return (
@@ -174,7 +177,11 @@ export const HomePage: React.FC = () => {
             <MovieBanner
               movies={carouselMovies}
               onPress={(movieIndex) => {
-                // Handle movie press
+                const movie = carouselMovies[movieIndex];
+                router.push({
+                  pathname: '/detail',
+                  params: { slug: movie.slug },
+                });
               }}
             />
           </View>
@@ -251,7 +258,10 @@ export const HomePage: React.FC = () => {
                 thumb_url: movie.thumb_url || movie.poster_url,
               }))}
               onPress={(anime) => {
-                // Handle anime press
+                router.push({
+                  pathname: '/detail',
+                  params: { slug: anime.slug },
+                });
               }}
               onViewMore={() => {
                 // Navigate to all animes
