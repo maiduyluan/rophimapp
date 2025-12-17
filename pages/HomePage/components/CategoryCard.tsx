@@ -1,4 +1,5 @@
 import { Genre } from '@/services/api/hooks';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -11,6 +12,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   genresData,
   onViewMore,
 }) => {
+  const router = useRouter();
   const categoryColors = [
     '#4A90E2',
     '#9B8FC4',
@@ -78,7 +80,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             <Pressable
               style={styles.pressable}
               onPress={() => {
-                // Handle genre press - navigate to genre details
+                router.push({
+                  pathname: '/genre-movies',
+                  params: { slug: genre.slug, title: genre.name },
+                });
               }}
               android_ripple={{ color: 'rgba(0, 0, 0, 0.2)' }}
             >

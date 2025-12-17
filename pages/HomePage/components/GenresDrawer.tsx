@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Animated,
@@ -33,6 +34,7 @@ export const GenresDrawer: React.FC<GenresDrawerProps> = ({
   onGenrePress,
   title = 'Các chủ đề',
 }) => {
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
@@ -122,9 +124,11 @@ export const GenresDrawer: React.FC<GenresDrawerProps> = ({
       <Pressable
         style={styles.genrePressable}
         onPress={() => {
-          if (onGenrePress) {
-            onGenrePress(genre);
-          }
+          onClose();
+          router.push({
+            pathname: '/genre-movies',
+            params: { slug: genre.slug, title: genre.name },
+          });
         }}
         android_ripple={{ color: 'rgba(0, 0, 0, 0.2)' }}
       >

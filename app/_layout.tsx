@@ -66,6 +66,12 @@ function RootLayoutContent() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="genre-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </View>
       <StatusBar style="auto" />
