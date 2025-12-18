@@ -47,9 +47,6 @@
         }
       ]
     ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "scheme": "rophimapp",
     "slug": "rophimapp",
     "updates": {
@@ -60,6 +57,9 @@
     "web": {
       "favicon": "./assets/images/favicon.png",
       "output": "static"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
