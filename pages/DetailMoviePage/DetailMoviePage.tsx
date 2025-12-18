@@ -1,4 +1,5 @@
 import { LoadingPage } from '@/components/LoadingPage';
+import { MovieCard } from '@/components/cards';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useGetDetailMovie, useGetListMovies } from '@/services/api/hooks';
@@ -301,17 +302,6 @@ export const DetailMoviePage: React.FC = () => {
       flexWrap: 'wrap',
       justifyContent: 'space-between',
     },
-    relatedMovieCard: {
-      width: '31%',
-      borderRadius: 8,
-      overflow: 'hidden',
-      backgroundColor: '#2a2a2a',
-    },
-    relatedMovieImage: {
-      width: '100%',
-      height: 160,
-      backgroundColor: '#1a1a1a',
-    },
     relatedMovieName: {
       fontSize: 11,
       color: colors.text,
@@ -323,6 +313,20 @@ export const DetailMoviePage: React.FC = () => {
   const handleEpisodePress = (episode: Episode) => {
     setSelectedEpisode(episode);
     setModalVisible(true);
+  };
+
+  const handleRelatedMoviePress = (movie: any) => {
+    router.push({
+      pathname: '/detail',
+      params: { slug: movie.slug },
+    });
+  };
+
+  const getRelatedMoviesWithFullUrl = (movies: any[]) => {
+    return movies.map((movie) => ({
+      ...movie,
+      poster_url: `https://phimimg.com/${movie.poster_url}`,
+    }));
   };
 
   if (isLoading || !formattedMovieData) {
@@ -515,20 +519,10 @@ export const DetailMoviePage: React.FC = () => {
           <Text style={styles.sectionTitle}>Phim liên quan</Text>
           <View style={styles.relatedMoviesGrid}>
             {relatedMovies?.length > 0 ? (
-              relatedMovies?.map((movie) => (
-                <Pressable key={movie._id} style={styles.relatedMovieCard}>
-                  <ExpoImage
-                    source={{
-                      uri: `https://phimimg.com/${movie.poster_url}`,
-                    }}
-                    style={styles.relatedMovieImage}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                  <Text style={styles.relatedMovieName} numberOfLines={2}>
-                    {movie.name}
-                  </Text>
-                </Pressable>
+              getRelatedMoviesWithFullUrl(relatedMovies)?.map((movie) => (
+                <View key={movie._id} style={{ width: '31%' }}>
+                  <MovieCard movie={movie} onPress={handleRelatedMoviePress} />
+                </View>
               ))
             ) : (
               <Text style={styles.relatedMovieName}>
