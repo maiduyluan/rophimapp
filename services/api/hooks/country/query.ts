@@ -6,7 +6,7 @@ export const useGetCountries = () => {
   return useQuery({
     queryKey: ['countries'],
     queryFn: async (): Promise<CountryItem[]> => {
-      const response = await apiClient.get<CountryItem[]>('v1/api/quoc-gia');
+      const response = await apiClient.get<CountryItem[]>('quoc-gia');
       return response.data;
     },
     staleTime: 1000 * 60 * 30,

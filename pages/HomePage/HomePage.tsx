@@ -1,13 +1,13 @@
 import { LoadingPage } from '@/components/LoadingPage';
 import { Header, SearchInput } from '@/components/layout';
+import { AnimeCarousel } from '@/components/ui/AnimeCarousel';
+import { CategoryCard } from '@/components/ui/CategoryCard';
+import { GenresDrawer } from '@/components/ui/GenresDrawer';
+import { OptionsDrawer } from '@/components/ui/OptionsDrawer';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AnimeCarousel } from '@/pages/HomePage/components/AnimeCarousel';
-import { CategoryCard } from '@/pages/HomePage/components/CategoryCard';
-import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
 import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
-import { OptionsDrawer } from '@/pages/HomePage/components/OptionsDrawer';
 import {
   useGetCartoonMovies,
   useGetCountries,
@@ -241,7 +241,10 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  router.push('/korea-movies');
+                  router.push({
+                    pathname: '/country-movies',
+                    params: { slug: 'han-quoc', title: 'Phim Hàn Quốc' },
+                  });
                 }}
               />
 
@@ -253,7 +256,10 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  router.push('/america-movies');
+                  router.push({
+                    pathname: '/country-movies',
+                    params: { slug: 'au-my', title: 'Phim Âu Mỹ' },
+                  });
                 }}
               />
 
@@ -265,7 +271,10 @@ export const HomePage: React.FC = () => {
                   // Handle movie press
                 }}
                 onViewMore={() => {
-                  router.push('/vietnam-movies');
+                  router.push({
+                    pathname: '/country-movies',
+                    params: { slug: 'viet-nam', title: 'Phim Việt Nam' },
+                  });
                 }}
               />
             </View>
@@ -275,9 +284,9 @@ export const HomePage: React.FC = () => {
             <MovieSlider
               title="Top 10 phim viễn tưởng"
               movies={fictionMovies}
+              showViewMoreButton={false}
               gradientColors={['#fff', '#fff', '#fff']}
               displayLimit={10}
-              showViewMoreButton={true}
               titleStyle={{ color: colors.text }}
               viewMoreIconColor={colors.text}
               onMoviePress={(movie) => {
@@ -331,7 +340,6 @@ export const HomePage: React.FC = () => {
 
       <OptionsDrawer
         visible={showOptionsDrawer}
-        genres={genresData || []}
         countries={countriesData || []}
         slideAnim={optionsSlideAnim}
         onClose={() => setShowOptionsDrawer(false)}

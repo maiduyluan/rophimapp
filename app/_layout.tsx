@@ -72,6 +72,18 @@ function RootLayoutContent() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="year-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="country-movies"
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack>
       </View>
       <StatusBar style="auto" />

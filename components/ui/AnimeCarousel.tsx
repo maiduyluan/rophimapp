@@ -4,7 +4,7 @@ import { Image as ExpoImage } from 'expo-image';
 import React, { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import { HtmlRenderer } from '../../../components/HtmlRenderer';
+import { HtmlRenderer } from '../HtmlRenderer';
 
 interface AnimeItem {
   _id: string;

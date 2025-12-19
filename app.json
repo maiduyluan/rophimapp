@@ -30,7 +30,6 @@
       "supportsTablet": true
     },
     "name": "rophimapp",
-    "newArchEnabled": false,
     "orientation": "portrait",
     "plugins": [
       "expo-router",
@@ -47,6 +46,9 @@
         }
       ]
     ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "scheme": "rophimapp",
     "slug": "rophimapp",
     "updates": {
@@ -57,9 +59,6 @@
     "web": {
       "favicon": "./assets/images/favicon.png",
       "output": "static"
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
     }
   }
 }

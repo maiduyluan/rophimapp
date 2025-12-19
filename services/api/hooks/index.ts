@@ -5,3 +5,4 @@ export * from './genre';
 export * from './list';
 export * from './newMovie';
 export * from './search';
+export * from './year';

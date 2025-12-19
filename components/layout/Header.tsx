@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchPress,
   onMenuPress,
   showSearchIcon = true,
-  showMenuIcon = true,
+  showMenuIcon = false,
   showBackIcon = false,
   onBackPress,
 }) => {

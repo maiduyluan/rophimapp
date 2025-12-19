@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface GenreItem {
   _id: string;
@@ -37,6 +38,7 @@ export const GenresDrawer: React.FC<GenresDrawerProps> = ({
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const insets = useSafeAreaInsets();
 
   const categoryColors = [
     '#4A90E2',
@@ -56,6 +58,7 @@ export const GenresDrawer: React.FC<GenresDrawerProps> = ({
       left: 0,
       right: 0,
       bottom: 0,
+      paddingBottom: insets.bottom,
       overflow: 'hidden',
       pointerEvents: visible ? 'auto' : 'none',
     },
