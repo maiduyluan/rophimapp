@@ -145,7 +145,6 @@ export const GenresDrawer: React.FC<GenresDrawerProps> = ({
     </View>
   );
 
-  // Group genres into pairs for 2-column layout
   const groupedGenres: GenreItem[][] = [];
   for (let i = 0; i < genres.length; i += 2) {
     groupedGenres.push(genres.slice(i, i + 2));

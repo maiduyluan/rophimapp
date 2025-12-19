@@ -7,7 +7,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 interface HeaderProps {
   title: string;
   onSearchPress?: () => void;
+  onMenuPress?: () => void;
   showSearchIcon?: boolean;
+  showMenuIcon?: boolean;
   showBackIcon?: boolean;
   onBackPress?: () => void;
 }
@@ -15,7 +17,9 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   title,
   onSearchPress,
+  onMenuPress,
   showSearchIcon = true,
+  showMenuIcon = true,
   showBackIcon = false,
   onBackPress,
 }) => {
@@ -62,6 +66,12 @@ export const Header: React.FC<HeaderProps> = ({
         {showSearchIcon && (
           <Pressable onPress={onSearchPress}>
             <Ionicons name="search" size={28} color={colors.text} />
+          </Pressable>
+        )}
+
+        {showMenuIcon && (
+          <Pressable onPress={onMenuPress}>
+            <Ionicons name="menu" size={28} color={colors.text} />
           </Pressable>
         )}
       </View>

@@ -30,6 +30,7 @@ export const DetailMoviePage: React.FC = () => {
   const [selectedServerIndex, setSelectedServerIndex] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(true);
   const scrollY = new Animated.Value(0);
 
   const movieData = detailData?.movie;
@@ -228,6 +229,11 @@ export const DetailMoviePage: React.FC = () => {
       fontWeight: '700',
       color: colors.text,
     },
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
     descriptionText: {
       fontSize: 14,
       color: colors.tabIconDefault,
@@ -374,7 +380,7 @@ export const DetailMoviePage: React.FC = () => {
           <ExpoImage
             source={{ uri: formattedMovieData.poster_url }}
             style={styles.posterImage}
-            contentFit="fill"
+            contentFit="cover"
             cachePolicy="memory-disk"
           />
         </View>
@@ -410,13 +416,25 @@ export const DetailMoviePage: React.FC = () => {
         </View>
 
         <View style={styles.descriptionSection}>
-          <Text style={styles.sectionTitle}>Mô tả</Text>
-          <Text style={styles.descriptionText}>
-            {formattedMovieData.name} ({formattedMovieData.origin_name}) - Năm{' '}
-            {formattedMovieData.year}
-            {'\n\n'}
-            {formattedMovieData.content}
-          </Text>
+          <Pressable
+            onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+            style={styles.sectionHeader}
+          >
+            <Text style={styles.sectionTitle}>Mô tả</Text>
+            <Ionicons
+              name={isDescriptionExpanded ? 'chevron-down' : 'chevron-up'}
+              size={16}
+              color={colors.text}
+            />
+          </Pressable>
+          {isDescriptionExpanded && (
+            <Text style={styles.descriptionText}>
+              {formattedMovieData.name} ({formattedMovieData.origin_name}) - Năm{' '}
+              {formattedMovieData.year}
+              {'\n\n'}
+              {formattedMovieData.content}
+            </Text>
+          )}
         </View>
 
         <View style={styles.seasonsSection}>

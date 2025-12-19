@@ -1,7 +1,10 @@
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Image as ExpoImage } from 'expo-image';
 import React, { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import { HtmlRenderer } from '../../../components/HtmlRenderer';
 
 interface AnimeItem {
   _id: string;
@@ -29,8 +32,12 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
   onPress,
   onViewMore,
 }) => {
-  const { width } = Dimensions.get('window');
+  const screenWidth = Dimensions.get('window').width;
+  const width = Math.round(screenWidth * 0.9);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
 
   if (animes.length === 0) {
     return null;
@@ -131,13 +138,15 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
       width: 8,
       height: 8,
       borderRadius: 4,
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+      backgroundColor: colors.text,
+      opacity: 0.3,
     },
     activeDot: {
       width: 24,
       height: 8,
       borderRadius: 4,
-      backgroundColor: '#fff',
+      backgroundColor: colors.text,
+      opacity: 1,
     },
   });
 
@@ -158,9 +167,15 @@ export const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
         <View style={styles.overlay}>
           <View style={styles.contentWrapper}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title} numberOfLines={2}>
-                {item.name}
-              </Text>
+              <HtmlRenderer
+                html={item.name}
+                baseStyle={styles.title}
+                tagsStyles={{
+                  p: { margin: 0 },
+                  span: { margin: 0 },
+                  div: { margin: 0 },
+                }}
+              />
               <Text style={styles.originName} numberOfLines={1}>
                 {item.origin_name}
               </Text>

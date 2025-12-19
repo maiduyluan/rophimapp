@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextStyle,
   View,
 } from 'react-native';
 
@@ -32,6 +33,10 @@ interface MovieSliderProps {
   gradientColors?: string[];
   displayLimit?: number;
   showViewMoreButton?: boolean;
+  titleStyle?: TextStyle;
+  viewMoreIconName?: string;
+  viewMoreIconColor?: string;
+  viewMoreIconSize?: number;
 }
 
 export const MovieSlider: React.FC<MovieSliderProps> = ({
@@ -42,6 +47,10 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
   gradientColors = ['#7B68EE', '#4A90E2', '#FF6B6B'],
   displayLimit = 6,
   showViewMoreButton = true,
+  titleStyle,
+  viewMoreIconName = 'chevron-forward',
+  viewMoreIconColor = '#fff',
+  viewMoreIconSize = 24,
 }) => {
   const router = useRouter();
   const { width } = Dimensions.get('window');
@@ -96,25 +105,29 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
     <View>
       <View style={styles.headerContainer}>
         <View style={{ flex: 1 }}>
-          <MaskedView
-            maskElement={
-              <Text
-                style={[
-                  styles.title,
-                  { paddingHorizontal: 2, paddingVertical: 2 },
-                ]}
-              >
-                {title}
-              </Text>
-            }
-          >
-            <LinearGradient
-              colors={gradientColors as any}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: 40, width: '100%' }}
-            />
-          </MaskedView>
+          {titleStyle ? (
+            <Text style={[styles.title, titleStyle]}>{title}</Text>
+          ) : (
+            <MaskedView
+              maskElement={
+                <Text
+                  style={[
+                    styles.title,
+                    { paddingHorizontal: 2, paddingVertical: 2 },
+                  ]}
+                >
+                  {title}
+                </Text>
+              }
+            >
+              <LinearGradient
+                colors={gradientColors as any}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{ height: 40, width: '100%' }}
+              />
+            </MaskedView>
+          )}
         </View>
         {displayedMovies.length > 0 && showViewMoreButton && (
           <Pressable
@@ -122,7 +135,11 @@ export const MovieSlider: React.FC<MovieSliderProps> = ({
             onPress={onViewMore}
             android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
           >
-            <Ionicons name="chevron-forward" size={24} color={'#fff'} />
+            <Ionicons
+              name={viewMoreIconName as any}
+              size={viewMoreIconSize}
+              color={viewMoreIconColor}
+            />
           </Pressable>
         )}
       </View>

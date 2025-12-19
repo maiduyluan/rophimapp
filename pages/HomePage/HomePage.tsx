@@ -7,8 +7,10 @@ import { CategoryCard } from '@/pages/HomePage/components/CategoryCard';
 import { GenresDrawer } from '@/pages/HomePage/components/GenresDrawer';
 import { MovieBanner } from '@/pages/HomePage/components/MovieBanner';
 import { MovieSlider } from '@/pages/HomePage/components/MovieSlider';
+import { OptionsDrawer } from '@/pages/HomePage/components/OptionsDrawer';
 import {
   useGetCartoonMovies,
+  useGetCountries,
   useGetCountryMovies,
   useGetGenreMovies,
   useGetGenres,
@@ -31,10 +33,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export const HomePage: React.FC = () => {
   const router = useRouter();
   const [showAllGenres, setShowAllGenres] = useState(false);
+  const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
   const [showSearchHeader, setShowSearchHeader] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const slideAnim = useRef(
+    new Animated.Value(Dimensions.get('window').width)
+  ).current;
+
+  const optionsSlideAnim = useRef(
     new Animated.Value(Dimensions.get('window').width)
   ).current;
 
@@ -50,6 +57,7 @@ export const HomePage: React.FC = () => {
     useGetGenreMovies('vien-tuong', { sort_field: 'modified.time' });
   const { data: cartoonMoviesData, isLoading: isLoadingCartoon } =
     useGetCartoonMovies();
+  const { data: countriesData } = useGetCountries();
 
   const formatMovieUrl = (movie: any) => ({
     ...movie,
@@ -94,7 +102,21 @@ export const HomePage: React.FC = () => {
         useNativeDriver: true,
       }).start();
     }
-  }, [showAllGenres, slideAnim]);
+
+    if (showOptionsDrawer) {
+      Animated.timing(optionsSlideAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(optionsSlideAnim, {
+        toValue: Dimensions.get('window').width,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [showAllGenres, slideAnim, showOptionsDrawer, optionsSlideAnim]);
 
   const styles = StyleSheet.create({
     safeContainer: {
@@ -124,7 +146,7 @@ export const HomePage: React.FC = () => {
     titleSection: {
       fontSize: 28,
       fontWeight: '700',
-      color: '#fff',
+      color: colors.text,
     },
     categoriesContainer: {
       flexDirection: 'row',
@@ -178,6 +200,8 @@ export const HomePage: React.FC = () => {
         <Header
           title="Trang chủ"
           onSearchPress={() => setShowSearchHeader(true)}
+          onMenuPress={() => setShowOptionsDrawer(true)}
+          showMenuIcon={true}
         />
       )}
       <View style={{ flex: 1 }}>
@@ -253,7 +277,9 @@ export const HomePage: React.FC = () => {
               movies={fictionMovies}
               gradientColors={['#fff', '#fff', '#fff']}
               displayLimit={10}
-              showViewMoreButton={false}
+              showViewMoreButton={true}
+              titleStyle={{ color: colors.text }}
+              viewMoreIconColor={colors.text}
               onMoviePress={(movie) => {
                 // Handle movie press
               }}
@@ -301,6 +327,15 @@ export const HomePage: React.FC = () => {
         slideAnim={slideAnim}
         onClose={() => setShowAllGenres(false)}
         title="Các chủ đề"
+      />
+
+      <OptionsDrawer
+        visible={showOptionsDrawer}
+        genres={genresData || []}
+        countries={countriesData || []}
+        slideAnim={optionsSlideAnim}
+        onClose={() => setShowOptionsDrawer(false)}
+        title="Tuỳ chọn"
       />
     </SafeAreaView>
   );
